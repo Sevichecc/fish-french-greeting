@@ -1,34 +1,34 @@
+# Global kaomoji array
+set -g fish_greeting_kaomojis \
+    "ヾ(•ω•\`)o" \
+    "٩(◕‿◕｡)۶" \
+    "＿φ(°-°=)" \
+    "⊂((・▽・))⊃" \
+    "(｡･ω･｡)" \
+    "=^._.^= ∫" \
+    "ᕙ(\`▽\`)ᕗ" \
+    "ʕ•ᴥ•ʔ" \
+    "ʕ￫ᴥ￩ʔ" \
+    "ʕ •`ᴥ•´ʔ" \
+    "ʕ≧ᴥ≦ʔ" \
+    "ʕ •ᴥ•ʔゝ☆" \
+    "ʕ •ᴥ•ʔ" \
+    "ʕ≧ᴥ≦ʔ" \
+    "ʕ´•ᴥ•`ʔ" \
+    "ʕ•́ᴥ•̀ʔっ" \
+    "ʕ ꈍᴥꈍʔ" \
+    "˙ᴥ˙" \
+    "ʕ◉ᴥ◉ʔ" \
+    "ʢᵕᴗᵕʡ"
+
 function fish_greeting
     # Check if curl is installed
     if not command -v curl >/dev/null
         set_color red
-        echo "Error: curl is not installed. Please install curl first."
+        printf "Error: curl is not installed. Please install curl first.\n"
         set_color normal
         return 1
     end
-
-    # Array of kaomojis
-    set -l kaomojis \
-        "ヾ(•ω•\`)o" \
-        "٩(◕‿◕｡)۶" \
-        "＿φ(°-°=)" \
-        "⊂((・▽・))⊃" \
-        "(｡･ω･｡)" \
-        "=^._.^= ∫" \
-        "ᕙ(\`▽\`)ᕗ" \
-        "ʕ•ᴥ•ʔ" \
-        "ʕ￫ᴥ￩ʔ" \
-        "ʕ •`ᴥ•´ʔ" \
-        "ʕ≧ᴥ≦ʔ" \
-        "ʕ •ᴥ•ʔゝ☆" \
-        "ʕ •ᴥ•ʔ" \
-        "ʕ≧ᴥ≦ʔ" \
-        "ʕ´•ᴥ•`ʔ" \
-        "ʕ•́ᴥ•̀ʔっ" \
-        "ʕ ꈍᴥꈍʔ" \
-        "˙ᴥ˙" \
-        "ʕ◉ᴥ◉ʔ" \
-        "ʢᵕᴗᵕʡ"
 
     # Cache file path
     set -l cache_file "$HOME/.cache/fish_greeting_cache.xml"
@@ -40,11 +40,11 @@ function fish_greeting
 
     set -l xml_data ""
     set -l should_fetch false
+    set -l today (date "+%Y%m%d")
 
     # Check if cache exists and is from today
     if test -f $cache_file
         set -l cache_date (date -r $cache_file "+%Y%m%d")
-        set -l today (date "+%Y%m%d")
         
         if test $cache_date = $today
             # Cache is from today, use it
@@ -66,7 +66,7 @@ function fish_greeting
         
         # Save to cache if fetch was successful
         if test $status -eq 0
-            echo $xml_data > $cache_file
+            printf "%s" $xml_data > $cache_file
         end
     end
     
@@ -81,19 +81,19 @@ function fish_greeting
         if test -n "$word" -a -n "$translation"
             # Display French word of the day
             set_color brmagenta
-            echo "✧ Today's French Word: $word ✧"
+            printf "✧ Today's French Word: %s ✧\n" $word
             set_color normal
-            echo "Meaning: $translation"
+            printf "Meaning: %s\n" $translation
             if test -n "$example_fr" -a -n "$example_en"
                 set_color yellow
-                echo "Example: $example_fr"
-                echo "         ($example_en)"
+                printf "Example: %s\n" $example_fr
+                printf "         (%s)\n" $example_en
             end
             set_color brgreen
-            echo "Bonne programmation et bonne pêche, $USER!"
+            printf "Bonne programmation et bonne pêche, %s!\n" $USER
             set_color brblack
-            set -l random_kaomoji (random choice $kaomojis)
-            echo $random_kaomoji" "(LC_TIME=fr_FR.UTF-8 date "+%A %d %B %Y %H:%M:%S")
+            set -l random_kaomoji (random choice $fish_greeting_kaomojis)
+            printf "%s %s\n" $random_kaomoji (LC_TIME=fr_FR.UTF-8 date "+%A %d %B %Y %H:%M:%S")
             set_color normal
             return
         end
@@ -101,11 +101,11 @@ function fish_greeting
     
     # Fallback greeting if no data available
     set_color yellow
-    echo "Unable to get word of the day, showing default greeting"
+    printf "Unable to get word of the day, showing default greeting\n"
     set_color normal
-    echo "Welcome to Fish Shell!"
+    printf "Welcome to Fish Shell!\n"
     set_color brblack
-    set -l random_kaomoji (random choice $kaomojis)
-    echo $random_kaomoji" "(date)
+    set -l random_kaomoji (random choice $fish_greeting_kaomojis)
+    printf "%s %s\n" $random_kaomoji (date)
     set_color normal
 end

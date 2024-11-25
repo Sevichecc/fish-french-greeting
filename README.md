@@ -1,4 +1,4 @@
-# Fish Greeting Script
+# Fish French Greeting Script
 
 ![example](./example.png)
 
